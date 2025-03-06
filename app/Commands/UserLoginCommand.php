@@ -54,6 +54,7 @@ class UserLoginCommand extends AmazeeAIBaseCommand
                         $response['token_type']
                     ]]
                 );
+
             } else {
                 $this->error('Invalid response from server');
                 $this->table(
