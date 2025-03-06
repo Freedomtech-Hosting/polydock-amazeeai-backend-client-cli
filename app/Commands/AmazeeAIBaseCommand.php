@@ -30,6 +30,14 @@ abstract class AmazeeAIBaseCommand extends Command
         chmod($this->tokenFile, 0600); // Secure the file
     }
 
+    protected function clearUserToken(): void
+    {
+        if (file_exists($this->tokenFile)) {
+            unlink($this->tokenFile);
+            $this->info('User token cleared');
+        }
+    }
+
     protected function getUserToken(): ?string
     {
         if (!file_exists($this->tokenFile)) {
