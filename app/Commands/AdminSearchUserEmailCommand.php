@@ -9,14 +9,14 @@ use FreedomtechHosting\PolydockAmazeeAIBackendClient\Client;
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Exception\HttpException;
 
 
-class AdminSearchUserEmailCommand extends Command
+class AdminSearchUserEmailCommand extends AmazeeAIBaseCommand
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'admin:search-user-email {email} {--token=}';
+    protected $signature = 'admin:search-user-email {email}';
 
     /**
      * The console command description.
@@ -31,28 +31,16 @@ class AdminSearchUserEmailCommand extends Command
     public function handle()
     {
 
-        if($this->option('token')) {
-            $this->info('Using token from command line');
-            $token = $this->option('token');
-        } else {
-            $this->info('Using token from environment variable');
-            $token = env('POLYDOCK_AMAZEEAI_ADMIN_TOKEN');
-        }
-
-        if(!$token) {
-            $this->error('No token provided');
-            return;
-        }
-
         $email = $this->argument('email');
         if(!$email) {
             $this->error('No email provided');
             return;
         }
 
-        $client = app(Client::class, ["token" => $token]);
+        $this->initializeClient();
+
         try {
-            $response = $client->searchUsers($email);
+            $response = $this->client->searchUsers($email);
             $this->table(
                 ['email', 'id', 'is_active', 'is_admin'],
                 array_map(function($user) {

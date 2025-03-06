@@ -8,56 +8,45 @@ use LaravelZero\Framework\Commands\Command;
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Client;
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Exception\HttpException;
 
-
-class MeCommand extends Command
+class MeCommand extends AmazeeAIBaseCommand
 {
     /**
-     * The name and signature of the console command.
+     * The signature of the command.
      *
      * @var string
      */
-    protected $signature = 'me {--token=}';
+    protected $signature = 'me';
 
     /**
-     * The console command description.
+     * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Find out about the token holder';
+    protected $description = 'Get information about the current user';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        if($this->option('token')) {
-            $this->info('Using token from command line');
-            $token = $this->option('token');
-        } else {
-            $this->info('Using token from environment variable');
-            $token = env('POLYDOCK_AMAZEEAI_ADMIN_TOKEN');
-        }
+        $this->initializeClient();
 
-        if(!$token) {
-            $this->error('No token provided');
-            return;
-        }
-
-
-        $client = app(Client::class, ["token" => $token]);
         try {
-            $response = $client->getMe();
+            $response = $this->client->getMe();
             $this->table(
-                array_keys($response),
-                [array_values($response)]
+                ['Field', 'Value'],
+                [
+                    ['Email', $response['email']],
+                    ['ID', $response['id']],
+                    ['Is Active', $response['is_active'] ? 'Yes' : 'No'],
+                    ['Is Admin', $response['is_admin'] ? 'Yes' : 'No'],
+                ]
             );
-        } catch (HttpException $e) {
-            $this->error(sprintf(
-                'HTTP Error %d: %s',
-                $e->getStatusCode(),
-                json_encode($e->getResponse(), JSON_PRETTY_PRINT)
-            ));
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+            return 1;
         }
 
+        return 0;
     }
 }

@@ -9,14 +9,14 @@ use FreedomtechHosting\PolydockAmazeeAIBackendClient\Client;
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Exception\HttpException;
 
 
-class AdminListUsersCommand extends Command
+class AdminListUsersCommand extends AmazeeAIBaseCommand
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'admin:list-users {--token=}';
+    protected $signature = 'admin:list-users';
 
     /**
      * The console command description.
@@ -30,23 +30,10 @@ class AdminListUsersCommand extends Command
      */
     public function handle()
     {
+        $this->initializeClient();
 
-        if($this->option('token')) {
-            $this->info('Using token from command line');
-            $token = $this->option('token');
-        } else {
-            $this->info('Using token from environment variable');
-            $token = env('POLYDOCK_AMAZEEAI_ADMIN_TOKEN');
-        }
-
-        if(!$token) {
-            $this->error('No token provided');
-            return;
-        }
-
-        $client = app(Client::class, ["token" => $token]);
         try {
-            $response = $client->listUsers();
+            $response = $this->client->listUsers();
             $this->table(
                 ['email', 'id', 'is_active', 'is_admin'],
                 array_map(function($user) {

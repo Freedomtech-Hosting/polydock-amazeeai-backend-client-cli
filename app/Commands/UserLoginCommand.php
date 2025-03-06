@@ -9,7 +9,7 @@ use FreedomtechHosting\PolydockAmazeeAIBackendClient\Client;
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Exception\HttpException;
 
 
-class UserLoginCommand extends Command
+class UserLoginCommand extends AmazeeAIBaseCommand
 {
     /**
      * The name and signature of the console command.
@@ -42,11 +42,10 @@ class UserLoginCommand extends Command
             return;
         }
 
-        $token = "";
+        $this->initializeClient();
 
-        $client = app(Client::class, ["token" => $token]);
         try {
-            $response = $client->login($email, $password);
+            $response = $this->client->login($email, $password);
             if (isset($response['access_token']) && isset($response['token_type'])) {
                 $this->table(
                     ['access_token', 'token_type'],

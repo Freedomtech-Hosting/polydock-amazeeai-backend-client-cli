@@ -8,7 +8,7 @@ use LaravelZero\Framework\Commands\Command;
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Client;
 
 
-class HealthCommand extends Command
+class HealthCommand extends AmazeeAIBaseCommand
 {
     /**
      * The name and signature of the console command.
@@ -29,8 +29,8 @@ class HealthCommand extends Command
      */
     public function handle()
     {
-        $client = app(Client::class, ["token" => "1234567890"]);
-        $response = $client->health();
+        $this->initializeClient();
+        $response = $this->client->health();
 
         if (is_array($response) && isset($response['status'])) {
             if ($response['status'] === 'healthy') {

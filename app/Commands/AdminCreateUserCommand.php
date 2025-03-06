@@ -8,15 +8,14 @@ use LaravelZero\Framework\Commands\Command;
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Client;
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Exception\HttpException;
 
-
-class AdminCreateUserCommand extends Command
+class AdminCreateUserCommand extends AmazeeAIBaseCommand
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'admin:create-user {email} {password} {--token=}';
+    protected $signature = 'admin:create-user {email} {password}';
 
     /**
      * The console command description.
@@ -30,25 +29,13 @@ class AdminCreateUserCommand extends Command
      */
     public function handle()
     {
-
-        if($this->option('token')) {
-            $this->info('Using token from command line');
-            $token = $this->option('token');
-        } else {
-            $this->info('Using token from environment variable');
-            $token = env('POLYDOCK_AMAZEEAI_ADMIN_TOKEN');
-        }
-
-        if(!$token) {
-            $this->error('No token provided');
-            return;
-        }
+        $this->initializeClient();
 
         $email = $this->argument('email');
         if(!$email) {
             $this->error('No email provided');
             return;
-        }   
+        }
 
         $password = $this->argument('password');
         if(!$password) {
@@ -56,37 +43,26 @@ class AdminCreateUserCommand extends Command
             return;
         }
 
-        $client = app(Client::class, ["token" => $token]);
         try {
-            $response = $client->searchUsers($email);
-            if (sizeof($response) > 0) {
-                $this->error('User already exists');
+            $existingUsers = $this->client->searchUsers($email);
+            if (count($existingUsers) > 0) {
+                $this->error('A user with this email already exists');
                 return;
             }
-            
-            $response = $client->createUser($email, $password);
-            if (!isset($response['id']) || $response['email'] !== $email) {
-                $this->error('Invalid response from server');
-                return;
-            }
-            $this->table(
-                ['email', 'id', 'is_active', 'is_admin'],
-                [[
-                    $response['email'],
-                    $response['id'],
-                    $response['is_active'] ? 'Yes' : 'No',
-                    $response['is_admin'] ? 'Yes' : 'No'
-                ]]
-            );
 
-            $this->info('User created successfully');
+            $response = $this->client->createUser($email, $password);
+            $this->info("User created successfully!");
+            $this->table(['Field', 'Value'], [
+                ['Email', $response['email']],
+                ['ID', $response['id']],
+            ]);
         } catch (HttpException $e) {
             $this->error(sprintf(
                 'HTTP Error %d: %s',
-                $e->getStatusCode(),
+                $e->getStatusCode(), 
                 json_encode($e->getResponse(), JSON_PRETTY_PRINT)
             ));
+            return;
         }
-
     }
 }
