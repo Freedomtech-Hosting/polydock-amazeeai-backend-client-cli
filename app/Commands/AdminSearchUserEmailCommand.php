@@ -37,9 +37,9 @@ class AdminSearchUserEmailCommand extends AmazeeAIBaseCommand
             return;
         }
 
-        $this->initializeClient();
 
         try {
+            $this->initializeClient(false);
             $response = $this->client->searchUsers($email);
             $this->table(
                 ['email', 'id', 'is_active', 'is_admin'],
@@ -58,7 +58,9 @@ class AdminSearchUserEmailCommand extends AmazeeAIBaseCommand
                 $e->getStatusCode(),
                 json_encode($e->getResponse(), JSON_PRETTY_PRINT)
             ));
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+            return;
         }
-
     }
 }

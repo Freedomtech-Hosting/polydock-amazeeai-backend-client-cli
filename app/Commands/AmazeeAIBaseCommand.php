@@ -45,24 +45,25 @@ abstract class AmazeeAIBaseCommand extends Command
             return $this->option('token');
         }
 
+        $runtimeToken = null;
+
         // If using user token, try to get it from file
         if ($this->useUserToken) {
-            $userToken = $this->getUserToken();
-            if ($userToken) {
+            $runtimeToken = $this->getUserToken();
+            if ($runtimeToken) {
                 $this->info('Using stored user token');
-                return $userToken;
             }
         } else {
             // Fallback to environment variable
             $this->info('Using token from environment variable');
-            $envToken = env('POLYDOCK_AMAZEEAI_ADMIN_TOKEN');
+            $runtimeToken = env('POLYDOCK_AMAZEEAI_ADMIN_TOKEN');
         }
-        
-        if (!$envToken) {
+
+        if (!$runtimeToken) {
             throw new \RuntimeException('No token available. Please login first or provide a token via --token option or POLYDOCK_AMAZEEAI_ADMIN_TOKEN environment variable.');
         }
 
-        return $envToken;
+        return $runtimeToken;
     }
 
     protected function initializeClient(bool $useUserToken = true): void

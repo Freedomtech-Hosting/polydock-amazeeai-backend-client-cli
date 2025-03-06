@@ -29,7 +29,7 @@ class HealthCommand extends AmazeeAIBaseCommand
      */
     public function handle()
     {
-        $this->initializeClient();
+        $this->initializeClient(false);
         $response = $this->client->health();
 
         if (is_array($response) && isset($response['status'])) {

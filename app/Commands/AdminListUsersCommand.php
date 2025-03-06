@@ -30,9 +30,9 @@ class AdminListUsersCommand extends AmazeeAIBaseCommand
      */
     public function handle()
     {
-        $this->initializeClient();
-
         try {
+            $this->initializeClient(false);
+
             $response = $this->client->listUsers();
             $this->table(
                 ['email', 'id', 'is_active', 'is_admin'],
@@ -51,7 +51,9 @@ class AdminListUsersCommand extends AmazeeAIBaseCommand
                 $e->getStatusCode(),
                 json_encode($e->getResponse(), JSON_PRETTY_PRINT)
             ));
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+            return;
         }
-
     }
 }

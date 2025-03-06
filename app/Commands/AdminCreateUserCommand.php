@@ -29,8 +29,6 @@ class AdminCreateUserCommand extends AmazeeAIBaseCommand
      */
     public function handle()
     {
-        $this->initializeClient();
-
         $email = $this->argument('email');
         if(!$email) {
             $this->error('No email provided');
@@ -44,6 +42,8 @@ class AdminCreateUserCommand extends AmazeeAIBaseCommand
         }
 
         try {
+            $this->initializeClient(false);
+
             $existingUsers = $this->client->searchUsers($email);
             if (count($existingUsers) > 0) {
                 $this->error('A user with this email already exists');
@@ -62,6 +62,9 @@ class AdminCreateUserCommand extends AmazeeAIBaseCommand
                 $e->getStatusCode(), 
                 json_encode($e->getResponse(), JSON_PRETTY_PRINT)
             ));
+            return;
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
             return;
         }
     }

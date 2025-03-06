@@ -8,30 +8,29 @@ use LaravelZero\Framework\Commands\Command;
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Client;
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Exception\HttpException;
 
-class MeCommand extends AmazeeAIBaseCommand
+class AdminMeCommand extends AmazeeAIBaseCommand
 {
     /**
      * The signature of the command.
      *
      * @var string
      */
-    protected $signature = 'me';
+    protected $signature = 'admin:me';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Get information about the current user';
+    protected $description = 'Get information about the current admin user';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $this->initializeClient();
-
         try {
+            $this->initializeClient(false);
             $response = $this->client->getMe();
             $this->table(
                 ['Field', 'Value'],

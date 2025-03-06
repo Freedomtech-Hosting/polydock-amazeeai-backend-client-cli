@@ -42,10 +42,9 @@ class UserLoginCommand extends AmazeeAIBaseCommand
             return;
         }
 
-        // Initialize client without user token for login
-        $this->initializeClient(false);
-
         try {
+            $this->initializeClient(false);
+
             $response = $this->client->login($email, $password);
             if (isset($response['access_token']) && isset($response['token_type'])) {
                 // Store the new token
@@ -72,6 +71,9 @@ class UserLoginCommand extends AmazeeAIBaseCommand
                 $e->getStatusCode(),
                 json_encode($e->getResponse(), JSON_PRETTY_PRINT)
             ));
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+            return;
         }
     }
 }
