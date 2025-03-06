@@ -2,6 +2,7 @@
 
 namespace App\Commands;
 
+use App\Enums\TokenType;
 use LaravelZero\Framework\Commands\Command;
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Client;
 
@@ -10,7 +11,7 @@ abstract class AmazeeAIBaseCommand extends Command
     protected ?string $token = null;
     protected Client $client;
     protected string $tokenFile = '.amazeeai-user.token';
-    protected bool $useUserToken = true; // Default to using user token
+    protected TokenType $tokenType = TokenType::USER_TOKEN; // Default to user token
 
     public function __construct()
     {
@@ -45,16 +46,21 @@ abstract class AmazeeAIBaseCommand extends Command
             return $this->option('token');
         }
 
+        // For NO_TOKEN, return empty string
+        if ($this->tokenType === TokenType::NO_TOKEN) {
+            return '';
+        }
+
         $runtimeToken = null;
 
         // If using user token, try to get it from file
-        if ($this->useUserToken) {
+        if ($this->tokenType === TokenType::USER_TOKEN) {
             $runtimeToken = $this->getUserToken();
             if ($runtimeToken) {
                 $this->info('Using stored user token');
             }
-        } else {
-            // Fallback to environment variable
+        } else if ($this->tokenType === TokenType::ADMIN_TOKEN) {
+            // Use environment variable for admin token
             $this->info('Using token from environment variable');
             $runtimeToken = env('POLYDOCK_AMAZEEAI_ADMIN_TOKEN');
         }
@@ -66,9 +72,9 @@ abstract class AmazeeAIBaseCommand extends Command
         return $runtimeToken;
     }
 
-    protected function initializeClient(bool $useUserToken = true): void
+    protected function initializeClient(TokenType $tokenType = TokenType::USER_TOKEN): void
     {
-        $this->useUserToken = $useUserToken;
+        $this->tokenType = $tokenType;
         $this->token = $this->getToken();
         $this->client = app()->make(Client::class, ['token' => $this->token]);
     }

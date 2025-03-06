@@ -8,6 +8,8 @@ use LaravelZero\Framework\Commands\Command;
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Client;
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Exception\HttpException;
 
+use App\Enums\TokenType;
+
 class AdminCreateUserCommand extends AmazeeAIBaseCommand
 {
     /**
@@ -42,7 +44,7 @@ class AdminCreateUserCommand extends AmazeeAIBaseCommand
         }
 
         try {
-            $this->initializeClient(false);
+            $this->initializeClient(TokenType::ADMIN_TOKEN);
 
             $existingUsers = $this->client->searchUsers($email);
             if (count($existingUsers) > 0) {

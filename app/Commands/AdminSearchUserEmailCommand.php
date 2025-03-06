@@ -7,7 +7,7 @@ use LaravelZero\Framework\Commands\Command;
 
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Client;
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Exception\HttpException;
-
+use App\Enums\TokenType;
 
 class AdminSearchUserEmailCommand extends AmazeeAIBaseCommand
 {
@@ -39,7 +39,7 @@ class AdminSearchUserEmailCommand extends AmazeeAIBaseCommand
 
 
         try {
-            $this->initializeClient(false);
+            $this->initializeClient(TokenType::ADMIN_TOKEN);
             $response = $this->client->searchUsers($email);
             $this->table(
                 ['email', 'id', 'is_active', 'is_admin'],

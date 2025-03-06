@@ -7,6 +7,7 @@ use LaravelZero\Framework\Commands\Command;
 
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Client;
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Exception\HttpException;
+use App\Enums\TokenType;
 
 class AdminMeCommand extends AmazeeAIBaseCommand
 {
@@ -30,7 +31,7 @@ class AdminMeCommand extends AmazeeAIBaseCommand
     public function handle()
     {
         try {
-            $this->initializeClient(false);
+            $this->initializeClient(TokenType::ADMIN_TOKEN);
             $response = $this->client->getMe();
             $this->table(
                 ['Field', 'Value'],

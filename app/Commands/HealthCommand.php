@@ -6,7 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Client;
-
+use App\Enums\TokenType;
 
 class HealthCommand extends AmazeeAIBaseCommand
 {
@@ -29,7 +29,7 @@ class HealthCommand extends AmazeeAIBaseCommand
      */
     public function handle()
     {
-        $this->initializeClient(false);
+        $this->initializeClient(TokenType::NO_TOKEN);
         $response = $this->client->health();
 
         if (is_array($response) && isset($response['status'])) {

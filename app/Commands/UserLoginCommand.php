@@ -8,6 +8,7 @@ use LaravelZero\Framework\Commands\Command;
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Client;
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Exception\HttpException;
 
+use App\Enums\TokenType;
 
 class UserLoginCommand extends AmazeeAIBaseCommand
 {
@@ -43,7 +44,7 @@ class UserLoginCommand extends AmazeeAIBaseCommand
         }
 
         try {
-            $this->initializeClient(false);
+            $this->initializeClient(TokenType::NO_TOKEN);
 
             $response = $this->client->login($email, $password);
             if (isset($response['access_token']) && isset($response['token_type'])) {

@@ -7,50 +7,57 @@ use LaravelZero\Framework\Commands\Command;
 
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Client;
 use FreedomtechHosting\PolydockAmazeeAIBackendClient\Exception\HttpException;
-
 use App\Enums\TokenType;
-class AdminListUsersCommand extends AmazeeAIBaseCommand
+
+class UserRegisterCommand extends AmazeeAIBaseCommand
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'admin:list-users';
+    protected $signature = 'user:register {email} {password}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'List all users';
+    protected $description = 'Register a new user';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        try {
-            $this->initializeClient(TokenType::ADMIN_TOKEN);
+        $email = $this->argument('email');
+        if(!$email) {
+            $this->error('No email provided');
+            return;
+        }
 
-            $response = $this->client->listUsers();
-            $this->table(
-                ['email', 'id', 'is_active', 'is_admin'],
-                array_map(function($user) {
-                    return [
-                        $user['email'],
-                        $user['id'],
-                        $user['is_active'] ? 'Yes' : 'No', 
-                        $user['is_admin'] ? 'Yes' : 'No'
-                    ];
-                }, $response)
-            );
+        $password = $this->argument('password');
+        if(!$password) {
+            $this->error('No password provided');
+            return;
+        }
+
+        try {
+            $this->initializeClient(TokenType::NO_TOKEN);
+
+            $response = $this->client->register($email, $password);
+            $this->info("User created successfully!");
+            $this->table(['Field', 'Value'], [
+                ['Email', $response['email']],
+                ['ID', $response['id']],
+            ]);
         } catch (HttpException $e) {
             $this->error(sprintf(
                 'HTTP Error %d: %s',
-                $e->getStatusCode(),
+                $e->getStatusCode(), 
                 json_encode($e->getResponse(), JSON_PRETTY_PRINT)
             ));
+            return;
         } catch (\Exception $e) {
             $this->error($e->getMessage());
             return;
