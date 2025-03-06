@@ -18,7 +18,7 @@
     "require": {
         "php": "^8.2.0",
         "laravel-zero/framework": "^11.36.1",
-        "freedomtech-hosting/polydock-amazeeai-backend-client-php": "@dev"
+        "freedomtech-hosting/polydock-amazeeai-backend-client-php": "^0.0.1"
     },
     "require-dev": {
         "laravel/pint": "^1.18.3",
@@ -45,12 +45,6 @@
             "pestphp/pest-plugin": true
         }
     },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "/home/bryan/Projects/polydockV2/polydock-amazeeai-backend-client-php"
-        }
-    ],
     "minimum-stability": "stable",
     "prefer-stable": true,
     "bin": ["amazeeai"]

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "53df59d5d9f64a502b2b37177d310a55",
+    "content-hash": "2330fde28603849ccb63a81d0ef9d5d9",
     "packages": [
         {
             "name": "brick/math",
@@ -364,11 +364,17 @@
         },
         {
             "name": "freedomtech-hosting/polydock-amazeeai-backend-client-php",
-            "version": "dev-main",
+            "version": "v0.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Freedomtech-Hosting/polydock-amazeeai-backend-client-php.git",
+                "reference": "5780632b1f01e4bcb5cd1ebd915ba68017429ddb"
+            },
             "dist": {
-                "type": "path",
-                "url": "/home/bryan/Projects/polydockV2/polydock-amazeeai-backend-client-php",
-                "reference": "73eb417e8ab0e426880bb59cc7302eac71fb9c3b"
+                "type": "zip",
+                "url": "https://api.github.com/repos/Freedomtech-Hosting/polydock-amazeeai-backend-client-php/zipball/5780632b1f01e4bcb5cd1ebd915ba68017429ddb",
+                "reference": "5780632b1f01e4bcb5cd1ebd915ba68017429ddb",
+                "shasum": ""
             },
             "require": {
                 "symfony/http-client": "^7.2"
@@ -379,6 +385,7 @@
                     "FreedomtechHosting\\PolydockAmazeeAIBackendClient\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -389,9 +396,11 @@
                 }
             ],
             "description": "The Freedom Tech amazee.ai Private AI PHP library",
-            "transport-options": {
-                "relative": false
-            }
+            "support": {
+                "issues": "https://github.com/Freedomtech-Hosting/polydock-amazeeai-backend-client-php/issues",
+                "source": "https://github.com/Freedomtech-Hosting/polydock-amazeeai-backend-client-php/tree/v0.0.1"
+            },
+            "time": "2025-03-06T23:23:01+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -8021,9 +8030,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "freedomtech-hosting/polydock-amazeeai-backend-client-php": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
