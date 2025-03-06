@@ -42,11 +42,16 @@ class UserLoginCommand extends AmazeeAIBaseCommand
             return;
         }
 
-        $this->initializeClient();
+        // Initialize client without user token for login
+        $this->initializeClient(false);
 
         try {
             $response = $this->client->login($email, $password);
             if (isset($response['access_token']) && isset($response['token_type'])) {
+                // Store the new token
+                $this->storeUserToken($response['access_token']);
+                
+                $this->info('Login successful - token stored for future use');
                 $this->table(
                     ['access_token', 'token_type'],
                     [[
@@ -54,7 +59,6 @@ class UserLoginCommand extends AmazeeAIBaseCommand
                         $response['token_type']
                     ]]
                 );
-
             } else {
                 $this->error('Invalid response from server');
                 $this->table(
@@ -69,6 +73,5 @@ class UserLoginCommand extends AmazeeAIBaseCommand
                 json_encode($e->getResponse(), JSON_PRETTY_PRINT)
             ));
         }
-
     }
 }
